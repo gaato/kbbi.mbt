@@ -25,17 +25,25 @@ fn attribute(node : @dom.Node, key : String) -> String {
 }
 
 ///|
+/// Whether `node` matches `excluded`: tag names, `span.<class>`, or `<font>` colors.
+fn is_excluded(node : @dom.Node, excluded : Array[String]) -> Bool {
+  excluded.contains(node.name()) ||
+  (
+    node.name() == "span" &&
+    excluded.contains("span." + attribute(node, "class"))
+  ) ||
+  (
+    node.name() == "font" &&
+    excluded.contains(attribute(node, "color").to_lower())
+  )
+}
+
+///|
 fn text_except(node : @dom.Node, excluded : Array[String]) -> String {
   if node.kind() == Text {
     return node.data()
   }
-  let color = attribute(node, "color").to_lower()
-  if excluded.contains(node.name()) ||
-    (
-      node.name() == "span" &&
-      excluded.contains("span." + attribute(node, "class"))
-    ) ||
-    (node.name() == "font" && excluded.contains(color)) {
+  if is_excluded(node, excluded) {
     return ""
   }
   let pieces : Array[String] = []
@@ -51,16 +59,38 @@ fn node_text(node : @dom.Node) -> String {
 }
 
 ///|
+/// Returns the first descendant element named `name`, skipping excluded subtrees.
+fn first_element_except(
+  node : @dom.Node,
+  name : String,
+  excluded : Array[String],
+) -> @dom.Node? {
+  for child in node.children() {
+    if child.kind() == Text || is_excluded(child, excluded) {
+      continue
+    }
+    if child.name() == name {
+      return Some(child)
+    }
+    if first_element_except(child, name, excluded) is Some(found) {
+      return Some(found)
+    }
+  }
+  None
+}
+
+///|
 fn parse_headword(h2 : @dom.Node, senses : Array[Sense]) -> Entry {
+  // A root link carries its own homograph number (`lari<sup>1</sup>`).
   let roots : Array[String] = []
   for link in @html_parser.query(h2, "span.rootword a") {
-    roots.push(node_text(link))
+    roots.push(normalize(text_except(link, ["sup"])))
   }
   let pronunciation = match @html_parser.query_one(h2, "span.syllable") {
     Some(span) => Some(node_text(span))
     None => None
   }
-  let homograph = match @html_parser.query_one(h2, "sup") {
+  let homograph = match first_element_except(h2, "sup", ["span.rootword"]) {
     Some(sup) => Some(@string.parse_int(node_text(sup))) catch { _ => None }
     None => None
   }

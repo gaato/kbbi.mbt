@@ -96,6 +96,11 @@ test "root word and phrase headword" {
   let punya = fixture(mempunyai_html, "mempunyai")
   assert_eq(punya.entries[0].headword, "mempunyai")
   assert_eq(punya.entries[0].root_words, ["punya"])
+  // The root link is `lari<sup>1</sup>`; its homograph number belongs to the root.
+  let lari = fixture(berlari_html, "berlari")
+  assert_eq(lari.entries[0].headword, "berlari")
+  assert_eq(lari.entries[0].root_words, ["lari"])
+  assert_eq(lari.entries[0].homograph, None)
   let rumah = fixture(rumah_sakit_html, "Rumah Sakit")
   assert_eq(rumah.entries[0].headword, "rumah sakit")
   assert_true(entry_url("Rumah Sakit").has_suffix("/entri/rumah%20sakit"))
