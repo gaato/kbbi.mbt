@@ -1,0 +1,18 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "gaato/kbbi/cli"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+type UsageError
+
+// Types and methods
+type Command derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,82 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "gaato/kbbi"
+
+import {
+  "gaato/http",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub const DEFAULT_BASE_URL : String = "https://kbbi.kemendikdasmen.go.id"
+
+pub fn entry_url(String, base_url? : String) -> String
+
+pub async fn lookup(&@http.Transport, String, base_url? : String) -> LookupResult raise KbbiError
+
+pub fn parse(StringView, query~ : String, url~ : String) -> LookupResult
+
+// Errors
+pub suberror KbbiError {
+  EmptyQuery
+  Http(@http.HttpError)
+  Status(Int)
+  Decode(String)
+} derive(@debug.Debug)
+pub fn KbbiError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub struct Entry {
+  headword : String
+  homograph : Int?
+  pronunciation : String?
+  root_words : Array[String]
+  senses : Array[Sense]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Entry::equal(Self, Self) -> Bool
+pub fn Entry::not_equal(Self, Self) -> Bool
+pub fn Entry::to_json(Self) -> Json
+pub fn Entry::to_repr(Self) -> @debug.Repr
+
+pub struct Example {
+  text : String
+  mut meaning : String?
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Example::equal(Self, Self) -> Bool
+pub fn Example::not_equal(Self, Self) -> Bool
+pub fn Example::to_json(Self) -> Json
+pub fn Example::to_repr(Self) -> @debug.Repr
+
+pub struct Label {
+  code : String
+  name : String
+  description : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Label::equal(Self, Self) -> Bool
+pub fn Label::not_equal(Self, Self) -> Bool
+pub fn Label::to_json(Self) -> Json
+pub fn Label::to_repr(Self) -> @debug.Repr
+
+pub struct LookupResult {
+  found : Bool
+  query : String
+  url : String
+  entries : Array[Entry]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn LookupResult::equal(Self, Self) -> Bool
+pub fn LookupResult::not_equal(Self, Self) -> Bool
+pub fn LookupResult::to_json(Self) -> Json
+pub fn LookupResult::to_repr(Self) -> @debug.Repr
+
+pub struct Sense {
+  labels : Array[Label]
+  gloss : String
+  examples : Array[Example]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Sense::equal(Self, Self) -> Bool
+pub fn Sense::not_equal(Self, Self) -> Bool
+pub fn Sense::to_json(Self) -> Json
+pub fn Sense::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

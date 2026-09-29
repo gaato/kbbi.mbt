@@ -1,0 +1,21 @@
+import {
+  "moonbitlang/x/fs",
+}
+
+fn main raise {
+  let names = ["makan", "gemas", "mempunyai", "rumah_sakit", "xyzqwe"]
+  let pieces : Array[String] = ["// Generated from testdata/*.html by moon run tools/regen_fixtures.mbtx.\n"]
+  for name in names {
+    let source = @fs.read_file_to_string("testdata/" + name + ".html")
+    pieces.push("///|\nlet " + name + "_html =\n")
+    let lines = source.split("\n").to_array()
+    if lines.length() > 0 && lines[lines.length() - 1] == "" {
+      lines.pop() |> ignore
+    }
+    for line in lines {
+      pieces.push("  #|" + line.trim_end(chars="\r").to_owned() + "\n")
+    }
+    pieces.push("\n")
+  }
+  @fs.write_string_to_file("fixtures_wbtest.mbt", pieces.join(""))
+}
