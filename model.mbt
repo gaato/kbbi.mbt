@@ -12,7 +12,7 @@ pub struct LookupResult {
 ///|
 pub struct Entry {
   headword : String
-  homograph : Int?
+  homograph : Int32?
   pronunciation : String?
   root_words : Array[String]
   senses : Array[Sense]
@@ -42,7 +42,7 @@ pub struct Example {
 pub suberror KbbiError {
   EmptyQuery
   Http(@http.HttpError)
-  Status(Int)
+  Status(Int32)
   Decode(String)
 } derive(Debug)
 

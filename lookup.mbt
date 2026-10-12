@@ -26,7 +26,7 @@ fn encoded_segment(query : String) -> String {
 ///|
 pub fn entry_url(
   query : String,
-  base_url? : String = DEFAULT_BASE_URL,
+  base_url~ : String = DEFAULT_BASE_URL,
 ) -> String {
   base_url.trim_end(chars="/").to_owned() +
   "/entri/" +
@@ -37,7 +37,7 @@ pub fn entry_url(
 pub async fn lookup(
   transport : &@http.Transport,
   query : String,
-  base_url? : String = DEFAULT_BASE_URL,
+  base_url~ : String = DEFAULT_BASE_URL,
 ) -> LookupResult raise KbbiError {
   let trimmed = query.trim().to_owned()
   if trimmed == "" {

@@ -1,5 +1,5 @@
 ///|
-async fn die(message : String, code~ : Int) -> Unit {
+async fn die(message : String, code~ : Int32) -> Unit {
   @stdio.stderr.write("error: " + message + "\n") catch {
     _ => ()
   }
