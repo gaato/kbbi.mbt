@@ -15,6 +15,8 @@ pub struct Entry {
   homograph : Int32?
   pronunciation : String?
   root_words : Array[String]
+  /// Nonstandard spellings from the heading's "bentuk tidak baku" note.
+  nonstandard_forms : Array[String]
   senses : Array[Sense]
 } derive(ToJson, Debug, Eq)
 

@@ -58,6 +58,7 @@ test "gemas pronunciation and JSON schema" {
         "headword": "gemas",
         "pronunciation": "/gêmas/",
         "root_words": [],
+        "nonstandard_forms": [],
         "senses": [
           {
             "labels": [
@@ -131,4 +132,25 @@ test "first sibling sense list and invalid homograph" {
   assert_eq(result.entries[0].homograph, None)
   assert_eq(result.entries[0].senses.length(), 1)
   assert_eq(result.entries[0].senses[0].gloss, "first")
+}
+
+///|
+test "nonstandard forms note is not part of the headword" {
+  let result = fixture(ikhlas_html, "ikhlas")
+  assert_eq(result.entries.length(), 1)
+  let entry = result.entries[0]
+  assert_eq(entry.headword, "ikhlas")
+  assert_eq(entry.nonstandard_forms, ["akhlas", "ihlas", "iklas"])
+  assert_eq(entry.homograph, None)
+  assert_eq(entry.pronunciation, None)
+  assert_eq(entry.senses[0].gloss, "bersih hati; tulus hati")
+  // Other `<small>` notes stay out of the headword without being misread as forms.
+  let other = parse(
+    "<h2>ka.ta<sup>2</sup> <br/><small>lihat <b>kata1</b></small></h2><ol><li>x</li></ol>",
+    query="kata",
+    url="u",
+  )
+  assert_eq(other.entries[0].headword, "kata")
+  assert_eq(other.entries[0].homograph, Some(2))
+  assert_eq(other.entries[0].nonstandard_forms, [])
 }

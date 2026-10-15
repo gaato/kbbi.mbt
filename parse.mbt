@@ -90,14 +90,35 @@ fn parse_headword(h2 : @dom.Node, senses : Array[Sense]) -> Entry {
     Some(span) => Some(node_text(span))
     None => None
   }
-  let homograph = match first_element_except(h2, "sup", ["span.rootword"]) {
+  let homograph = match
+    first_element_except(h2, "sup", ["span.rootword", "small"]) {
     Some(sup) => Some(@string.parse_int(node_text(sup))) catch { _ => None }
     None => None
   }
+  // Notes such as `<small>bentuk tidak baku: <b>akhlas</b><b>, ihlas</b></small>`
+  // follow the headword inside the same `<h2>`.
+  let nonstandard_forms : Array[String] = []
+  for small in @html_parser.query(h2, "small") {
+    if node_text(small).to_lower().has_prefix("bentuk tidak baku") {
+      for b in @html_parser.query(small, "b") {
+        let form = node_text(b).trim(chars=", ").to_owned()
+        if form != "" {
+          nonstandard_forms.push(form)
+        }
+      }
+    }
+  }
   let headword = normalize(
-    text_except(h2, ["span.rootword", "span.syllable", "sup"]),
+    text_except(h2, ["span.rootword", "span.syllable", "sup", "small"]),
   ).replace_all(old=".", new="")
-  { headword, homograph, pronunciation, root_words: roots, senses, }
+  {
+    headword,
+    homograph,
+    pronunciation,
+    root_words: roots,
+    nonstandard_forms,
+    senses,
+  }
 }
 
 ///|

@@ -1,6 +1,6 @@
 # kbbi.mbt
 
-Unofficial MoonBit lookup library and CLI for KBBI Daring, with an agent skill in [cli/SKILL.md](cli/SKILL.md). It parses dictionary entries into typed data, including homographs, pronunciations, root words, labels, definitions, examples, and example meanings.
+Unofficial MoonBit lookup library and CLI for KBBI Daring, with an agent skill in [cli/SKILL.md](cli/SKILL.md). It parses dictionary entries into typed data, including homographs, pronunciations, root words, nonstandard spellings, labels, definitions, examples, and example meanings.
 
 ## Library
 

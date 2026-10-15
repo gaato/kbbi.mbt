@@ -3,7 +3,7 @@ import {
 }
 
 fn main raise {
-  let names = ["makan", "gemas", "mempunyai", "rumah_sakit", "xyzqwe", "berlari"]
+  let names = ["makan", "gemas", "mempunyai", "rumah_sakit", "xyzqwe", "berlari", "ikhlas"]
   let pieces : Array[String] = ["// Generated from testdata/*.html by moon run tools/regen_fixtures.mbtx.\n"]
   for name in names {
     let source = @fs.read_file_to_string("testdata/" + name + ".html")
