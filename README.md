@@ -18,10 +18,10 @@ println(result.to_json().stringify(indent=2))
 ## CLI
 
 ```fish
-moonx gaato/kbbi/cli@0.1.3 makan
-moonx gaato/kbbi/cli@0.1.3 rumah sakit
-moonx gaato/kbbi/cli@0.1.3 --help
-moonx --experimental-policy cli/kbbi-policy.json gaato/kbbi/cli@0.1.3 gemas
+moonx gaato/kbbi/cli@0.1.4 makan
+moonx gaato/kbbi/cli@0.1.4 rumah sakit
+moonx gaato/kbbi/cli@0.1.4 --help
+moonx --experimental-policy cli/kbbi-policy.json gaato/kbbi/cli@0.1.4 gemas
 ```
 
 Arguments form one query, joined with spaces. Successful lookups print one pretty JSON document, including `found: false` for no match. Help and version are plain text. Exit codes: 0 success, 1 runtime failure, 2 usage error. Runtime and usage errors print `error: ...` to stderr. The CLI supports wasm and native.

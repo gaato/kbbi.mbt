@@ -16,7 +16,7 @@ async fn main {
   }
   match command {
     Help(usage) => println(usage)
-    Version => println("kbbi 0.1.3")
+    Version => println("kbbi 0.1.4")
     Lookup(query) => {
       let transport = @http_async.AsyncTransport::new(timeout_ms=10000)
       defer transport.close()
