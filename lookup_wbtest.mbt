@@ -34,7 +34,7 @@ async test "lookup sends encoded URL and headers" {
   assert_eq(request.url, result.url)
   assert_eq(
     request.headers.get("User-Agent"),
-    Some("kbbi.mbt/0.1.2 (https://github.com/gaato/kbbi.mbt)"),
+    Some("kbbi.mbt/0.1.3 (https://github.com/gaato/kbbi.mbt)"),
   )
   assert_eq(
     request.headers.get("Accept"),
