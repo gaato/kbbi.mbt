@@ -45,7 +45,7 @@ pub async fn lookup(
   }
   let url = entry_url(trimmed, base_url~)
   let request = @http.Request::get(url)
-    .header("User-Agent", "kbbi.mbt/0.1.5 (https://github.com/gaato/kbbi.mbt)")
+    .header("User-Agent", "kbbi.mbt/0.1.6 (https://github.com/gaato/kbbi.mbt)")
     .header("Accept", "text/html,application/xhtml+xml")
   let response = transport.send(request) catch { err => raise Http(err) }
   if !response.is_success() {
