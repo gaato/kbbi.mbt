@@ -16,8 +16,8 @@ preferred_target = "wasm"
 
 import {
   "bobzhang/html_parser@0.2.0",
-  "gaato/http@0.4.0",
-  "gaato/http-async@0.4.1",
+  "gaato/http@0.4.1",
+  "gaato/http-async@0.4.2",
   "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
 }
