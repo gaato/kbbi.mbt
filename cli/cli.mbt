@@ -44,7 +44,7 @@ fn build_cli() -> @argparse.Command {
   @argparse.Command(
     "kbbi",
     about="Look up Indonesian words in KBBI Daring.",
-    version="0.1.4",
+    version="0.1.5",
     positionals=[
       @argparse.PositionArg(
         "words",
