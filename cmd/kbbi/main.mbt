@@ -20,7 +20,7 @@ async fn main {
     Lookup(query) => {
       let transport = @http_async.AsyncTransport::new(timeout_ms=10000)
       defer transport.close()
-      let result = @kbbi.lookup(transport, query) catch {
+      let result = @lib.lookup(transport, query) catch {
         err => {
           die(describe_error(err), code=1)
           return

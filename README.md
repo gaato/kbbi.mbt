@@ -1,6 +1,6 @@
 # kbbi.mbt
 
-Unofficial MoonBit lookup library and CLI for KBBI Daring, with an agent skill in [cli/SKILL.md](cli/SKILL.md). It parses dictionary entries into typed data, including homographs, pronunciations, root words, nonstandard spellings, labels, definitions, examples, and example meanings.
+Unofficial MoonBit lookup library and CLI for KBBI Daring, with an agent skill in [cmd/kbbi/SKILL.md](cmd/kbbi/SKILL.md). It parses dictionary entries into typed data, including homographs, pronunciations, root words, nonstandard spellings, labels, definitions, examples, and example meanings.
 
 ## Library
 
@@ -18,10 +18,10 @@ println(result.to_json().stringify(indent=2))
 ## CLI
 
 ```fish
-moonx gaato/kbbi/cli@0.1.5 makan
-moonx gaato/kbbi/cli@0.1.5 rumah sakit
-moonx gaato/kbbi/cli@0.1.5 --help
-moonx --experimental-policy cli/kbbi-policy.json gaato/kbbi/cli@0.1.5 gemas
+moonx gaato/kbbi/cmd/kbbi@0.1.5 makan
+moonx gaato/kbbi/cmd/kbbi@0.1.5 rumah sakit
+moonx gaato/kbbi/cmd/kbbi@0.1.5 --help
+moonx --experimental-policy cmd/kbbi/kbbi-policy.json gaato/kbbi/cmd/kbbi@0.1.5 gemas
 ```
 
 Arguments form one query, joined with spaces. Successful lookups print one pretty JSON document, including `found: false` for no match. Help and version are plain text. Exit codes: 0 success, 1 runtime failure, 2 usage error. Runtime and usage errors print `error: ...` to stderr. The CLI supports wasm and native.

@@ -1,5 +1,5 @@
 import {
-  "gaato/kbbi",
+  "gaato/kbbi" @lib,
   "gaato/http",
   "gaato/http-async" @http_async,
   "moonbitlang/async",

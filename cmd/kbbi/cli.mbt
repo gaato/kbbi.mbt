@@ -13,15 +13,15 @@ enum Command {
 ///|
 fn describe_error(err : Error) -> String {
   match err {
-    @kbbi.EmptyQuery => "query must not be empty"
-    @kbbi.Http(@http.Connect(message)) => "connection failed: \{message}"
-    @kbbi.Http(@http.Timeout(ms~, ..)) => "request timed out after \{ms} ms"
-    @kbbi.Http(@http.Network(message~, ..)) => "network error: \{message}"
-    @kbbi.Http(@http.Protocol(message)) => "HTTP protocol error: \{message}"
-    @kbbi.Http(@http.Proxy(status~, message~)) =>
+    @lib.EmptyQuery => "query must not be empty"
+    @lib.Http(@http.Connect(message)) => "connection failed: \{message}"
+    @lib.Http(@http.Timeout(ms~, ..)) => "request timed out after \{ms} ms"
+    @lib.Http(@http.Network(message~, ..)) => "network error: \{message}"
+    @lib.Http(@http.Protocol(message)) => "HTTP protocol error: \{message}"
+    @lib.Http(@http.Proxy(status~, message~)) =>
       "proxy refused (HTTP \{status}): \{message}"
-    @kbbi.Status(code) => "KBBI returned HTTP \{code}"
-    @kbbi.Decode(message) => "could not decode the response: \{message}"
+    @lib.Status(code) => "KBBI returned HTTP \{code}"
+    @lib.Decode(message) => "could not decode the response: \{message}"
     _ => err.to_string()
   }
 }
