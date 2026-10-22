@@ -6,8 +6,8 @@ target/
 .repos/
 .env
 node_modules/
-# Repository-only files: agent instructions, the docs audit, and the fixture
-# regeneration script.
+# Repository-only files: agent instructions, the docs audit, the gates, and
+# the fixture regeneration script.
 AGENTS.md
 scripts/
 tools/
