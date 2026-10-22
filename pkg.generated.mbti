@@ -19,7 +19,7 @@ pub fn parse(StringView, query~ : String, url~ : String) -> LookupResult
 pub suberror KbbiError {
   EmptyQuery
   Http(@http.HttpError)
-  Status(Int)
+  Status(Int32)
   Decode(String)
 } derive(@debug.Debug)
 pub fn KbbiError::to_repr(Self) -> @debug.Repr
@@ -27,7 +27,7 @@ pub fn KbbiError::to_repr(Self) -> @debug.Repr
 // Types and methods
 pub struct Entry {
   headword : String
-  homograph : Int?
+  homograph : Int32?
   pronunciation : String?
   root_words : Array[String]
   nonstandard_forms : Array[String]
