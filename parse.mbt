@@ -191,6 +191,10 @@ fn list_senses(list : @dom.Node) -> Array[Sense] {
 }
 
 ///|
+/// Parses an entry page's HTML without any IO. `query` is trimmed and,
+/// with `url`, copied into the result. Each `<h2>` headword followed by a
+/// list of senses becomes an `Entry`; a "not found" page or HTML that cannot
+/// be parsed gives `found: false`. Never raises.
 pub fn parse(html : StringView, query~ : String, url~ : String) -> LookupResult {
   let trimmed = query.trim().to_owned()
   let entries : Array[Entry] = []

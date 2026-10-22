@@ -1,17 +1,11 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "gaato/kbbi/cmd/kbbi"
 
-import {
-  "moonbitlang/core/debug",
-}
-
 // Values
 
 // Errors
-type UsageError
 
 // Types and methods
-type Command derive(Eq, @debug.Debug)
 
 // Type aliases
 

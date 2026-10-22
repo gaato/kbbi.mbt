@@ -24,6 +24,9 @@ fn encoded_segment(query : String) -> String {
 }
 
 ///|
+/// The entry page URL for `query`: the query is trimmed, lowercased and
+/// percent-encoded as one path segment under `<base_url>/entri/`. A trailing
+/// `/` on `base_url` is ignored.
 pub fn entry_url(
   query : String,
   base_url~ : String = DEFAULT_BASE_URL,
@@ -34,6 +37,13 @@ pub fn entry_url(
 }
 
 ///|
+/// Looks up `query` on KBBI Daring: trims it, sends one GET request for its
+/// `entry_url` through `transport`, and parses the page with `parse`. A word
+/// KBBI does not have gives `found: false`, not an error.
+///
+/// Raises `EmptyQuery` for a blank query (before any request), `Http` when
+/// the transport fails, `Status` for a non-2xx response, and `Decode` when
+/// the body is not valid UTF-8.
 pub async fn lookup(
   transport : &@http.Transport,
   query : String,

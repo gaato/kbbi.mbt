@@ -1,14 +1,14 @@
 ///|
-suberror UsageError {
+priv suberror UsageError {
   UsageError(String)
 }
 
 ///|
-enum Command {
+priv enum Command {
   Help(String)
   Version
   Lookup(String)
-} derive(Debug, Eq)
+}
 
 ///|
 fn describe_error(err : Error) -> String {
