@@ -1,6 +1,8 @@
+----
 import {
   "moonbitlang/x/fs",
 }
+----
 
 fn main raise {
   let names = ["makan", "gemas", "mempunyai", "rumah_sakit", "xyzqwe", "berlari", "ikhlas"]
