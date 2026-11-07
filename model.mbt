@@ -6,12 +6,13 @@ pub const DEFAULT_BASE_URL : String = "https://kbbi.kemendikdasmen.go.id"
 ///|
 /// The outcome of one lookup. `found` is true when `entries` is not empty;
 /// `query` is the trimmed query and `url` the entry page that was read.
+#derive(ToJson, Debug, Eq)
 pub struct LookupResult {
   found : Bool
   query : String
   url : String
   entries : Array[Entry]
-} derive(ToJson, Debug, Eq)
+}
 
 ///|
 /// One headword on an entry page, with its senses in page order.
@@ -20,6 +21,7 @@ pub struct LookupResult {
 /// superscript number that tells homographs apart, and `pronunciation` the
 /// syllable spelling KBBI gives for some words. `root_words` lists the words
 /// a derived form is built from.
+#derive(ToJson, Debug, Eq)
 pub struct Entry {
   headword : String
   homograph : Int32?
@@ -28,16 +30,17 @@ pub struct Entry {
   /// Nonstandard spellings from the heading's "bentuk tidak baku" note.
   nonstandard_forms : Array[String]
   senses : Array[Sense]
-} derive(ToJson, Debug, Eq)
+}
 
 ///|
 /// One numbered definition of an entry: its word-class and usage labels,
 /// the definition text in `gloss`, and the example phrases that follow it.
+#derive(ToJson, Debug, Eq)
 pub struct Sense {
   labels : Array[Label]
   gloss : String
   examples : Array[Example]
-} derive(ToJson, Debug, Eq)
+}
 
 ///|
 /// A word-class or usage label on a sense, such as `v` for a verb.
@@ -45,30 +48,33 @@ pub struct Sense {
 /// `code` is the abbreviation shown on the page, `name` the label's full
 /// name (the code when KBBI gives none), and `description` the explanation
 /// after the name, or empty when there is none.
+#derive(ToJson, Debug, Eq)
 pub struct Label {
   code : String
   name : String
   description : String
-} derive(ToJson, Debug, Eq)
+}
 
 ///|
 /// An example phrase for a sense. In `text`, `--` stands for the headword;
 /// `meaning` holds the explanation KBBI gives for an idiomatic example.
+#derive(ToJson, Debug, Eq)
 pub struct Example {
   text : String
   mut meaning : String?
-} derive(ToJson, Debug, Eq)
+}
 
 ///|
 /// Why `lookup` failed: the query was empty after trimming, the transport
 /// failed, the site answered with a non-2xx status, or the body was not
 /// valid UTF-8.
+#derive(Debug)
 pub suberror KbbiError {
   EmptyQuery
   Http(@http.HttpError)
   Status(Int32)
   Decode(String)
-} derive(Debug)
+}
 
 ///|
 /// Converts a `LookupResult` to JSON with the derived `ToJson`.
