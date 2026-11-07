@@ -6,6 +6,16 @@ cd "$(dirname "$0")/.."
 
 run() { echo "+ $*"; "$@"; }
 
+# The command and the User-Agent name the version in moon.mod.
+version="$(sed -nE 's/^version = "(.*)"$/\1/p' moon.mod)"
+grep -Fq "let version : String = \"$version\"" cmd/kbbi/cli.mbt || {
+  echo "cmd/kbbi/cli.mbt: version does not equal $version from moon.mod" >&2
+  exit 1
+}
+grep -Fq "kbbi.mbt/$version (" lookup.mbt || {
+  echo "lookup.mbt: the User-Agent does not name version $version from moon.mod" >&2
+  exit 1
+}
 run moon fmt --check
 run moon check --target wasm --deny-warn
 run moon test --target wasm

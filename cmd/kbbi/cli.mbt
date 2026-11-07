@@ -4,9 +4,16 @@ priv suberror UsageError {
 }
 
 ///|
+/// The version `--version` reports. scripts/gates.sh checks that it equals
+/// `version` in moon.mod.
+let version : String = "0.1.6"
+
+///|
+/// What the arguments ask for. `Help` and `Version` carry the text to print,
+/// so parsing never prints or exits.
 priv enum Command {
   Help(String)
-  Version
+  Version(String)
   Lookup(String)
 }
 
@@ -44,7 +51,7 @@ fn build_cli() -> @argparse.Command {
   @argparse.Command(
     "kbbi",
     about="Look up Indonesian words in KBBI Daring.",
-    version="0.1.6",
+    version~,
     positionals=[
       @argparse.PositionArg(
         "words",
@@ -58,14 +65,11 @@ fn build_cli() -> @argparse.Command {
 
 ///|
 fn parse_command(argv : Array[String]) -> Command raise UsageError {
-  if argv == ["--help"] || argv == ["-h"] {
-    return Help(build_cli().render_help())
-  }
-  if argv == ["--version"] {
-    return Version
-  }
-  let matches = build_cli().parse(argv~, env={}) catch {
-    err => raise UsageError(argument_error(err))
+  let matches = match build_cli().parse_outcome(argv~) {
+    Parsed(matches) => matches
+    Help(text) => return Help(text)
+    Version(text) => return Version("kbbi \{text}")
+    Failed(err) => raise UsageError(argument_error(err))
   }
   let words = match matches.values.get("words") {
     Some(values) => values

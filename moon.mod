@@ -19,5 +19,4 @@ import {
   "gaato/http@0.5.0",
   "gaato/http-async@0.5.0",
   "moonbitlang/async@0.22.5",
-  "moonbitlang/x@0.5.6",
 }

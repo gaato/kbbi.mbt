@@ -15,8 +15,15 @@ All notable changes to this project are documented here. The format follows
   `sh`. Every public declaration has a doc comment.
 - The command's internal `Command` and `UsageError` types are private; they
   were never usable from outside the executable.
-- Built on `gaato/http` 0.5.0, `gaato/http-async` 0.5.0 and `moonbitlang/x`
-  0.5.6, and tested with MoonBit 0.10.16. The generated `.mbti` files spell
+- **`-V` and `--version` anywhere print `kbbi` and the version**, as
+  `--version` alone already did; they printed the bare version before.
+  `--help` and `-h` print the same help wherever they appear, without the
+  trailing blank line that `--help` alone used to add. The command reads
+  core argparse's parse outcome instead of letting it print and exit, and
+  exits through core `@env.exit`, so it no longer depends on
+  `moonbitlang/x`.
+- Built on `gaato/http` 0.5.0 and `gaato/http-async` 0.5.0, and tested
+  with MoonBit 0.10.16. The generated `.mbti` files spell
   `Int` as `Int32`, the same type.
 
 ## [0.1.6] - 2026-10-19

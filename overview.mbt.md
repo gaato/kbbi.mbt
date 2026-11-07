@@ -102,10 +102,10 @@ moonx gaato/kbbi/cmd/kbbi --help
 ```
 
 Arguments form one query, joined with spaces. A lookup prints one pretty
-JSON document, including `found: false` for no match. `--help` and
-`--version` print plain text. The exit code is 0 on success, 1 for a
-network, status, or decoding failure, and 2 for invalid arguments; errors go
-to stderr as `error: ...`. Requests time out after 10 seconds.
+JSON document, including `found: false` for no match. `--help` (`-h`)
+and `--version` (`-V`) print plain text wherever they appear. The exit code
+is 0 on success, 1 for a network, status, or decoding failure, and 2 for
+invalid arguments; errors go to stderr as `error: ...`. Requests time out after 10 seconds.
 
 An optional moonrun policy limits the command's network access to KBBI. Save
 this as `kbbi-policy.json`:
