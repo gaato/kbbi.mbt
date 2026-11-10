@@ -1,6 +1,6 @@
 name = "gaato/kbbi"
 
-version = "0.1.6"
+version = "0.2.0"
 
 readme = "README.md"
 
@@ -16,7 +16,7 @@ preferred_target = "wasm"
 
 import {
   "bobzhang/html_parser@0.2.0",
-  "gaato/http@0.5.0",
-  "gaato/http-async@0.5.0",
-  "moonbitlang/async@0.22.5",
+  "gaato/http@0.6.0",
+  "gaato/http-async@0.6.0",
+  "gaato/mttp@0.1.0",
 }

@@ -37,30 +37,45 @@ pub fn entry_url(
 }
 
 ///|
-/// Looks up `query` on KBBI Daring: trims it, sends one GET request for its
-/// `entry_url` through `transport`, and parses the page with `parse`. A word
+/// Looks up `query` on KBBI Daring: trims it, sends a GET request for its
+/// `entry_url` through `client`, and parses the page with `parse`. A word
 /// KBBI does not have gives `found: false`, not an error.
 ///
 /// Raises `EmptyQuery` for a blank query (before any request), `Http` when
 /// the transport fails, `Status` for a non-2xx response, and `Decode` when
-/// the body is not valid UTF-8.
+/// the body is not valid UTF-8. Other client policy errors propagate unchanged.
+/// The caller owns the client; its policies and body limits apply to the call.
 pub async fn lookup(
-  transport : &@http.Transport,
+  client : @client.Client,
   query : String,
   base_url~ : String = DEFAULT_BASE_URL,
-) -> LookupResult raise KbbiError {
+) -> LookupResult {
   let trimmed = query.trim().to_owned()
   if trimmed == "" {
     raise EmptyQuery
   }
   let url = entry_url(trimmed, base_url~)
-  let request = @http.Request::get(url)
-    .header("User-Agent", "kbbi.mbt/0.1.6 (https://github.com/gaato/kbbi.mbt)")
+  // Select before reading so an error status wins over an unreadable body.
+  let reader : @client.ResponsePlan[Result[Bytes, Int32], @client.Buffered] = @client.from_head(head => {
+      if @http.is_success(head.status) {
+        @client.ResponsePlan::new((_, bytes) => Ok(bytes))
+      } else {
+        @client.ignore_body().any_status().map(_ => Err(head.status))
+      }
+    },
+  )
+  let request = @client.get(url)
+    .header("User-Agent", "kbbi.mbt/0.2.0 (https://github.com/gaato/kbbi.mbt)")
     .header("Accept", "text/html,application/xhtml+xml")
-  let response = transport.send(request) catch { err => raise Http(err) }
-  if !response.is_success() {
-    raise Status(response.status)
+    .response(reader)
+  let response = client.send(request) catch {
+    @http.TransportError(..) as err => raise Http(err)
+    err => raise err
   }
-  let body = response.text() catch { _ => raise Decode("malformed UTF-8") }
+  let bytes = match response.body {
+    Ok(bytes) => bytes
+    Err(status) => raise Status(status)
+  }
+  let body = @utf8.decode(bytes) catch { _ => raise Decode("malformed UTF-8") }
   parse(body, query=trimmed, url~)
 }

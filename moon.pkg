@@ -2,6 +2,7 @@ import {
   "bobzhang/html_parser",
   "bobzhang/html_parser/dom",
   "gaato/http",
+  "gaato/mttp/client",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/string",
 }
@@ -9,5 +10,10 @@ import {
 supported_targets = "wasm + native + js"
 
 import {
-  "moonbitlang/async",
+  "gaato/http/driver",
+  "gaato/http/sim",
 } for "wbtest"
+
+options(
+  "allow-experimental-packages": [ "gaato/http/driver" ],
+)

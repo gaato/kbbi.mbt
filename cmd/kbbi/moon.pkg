@@ -1,8 +1,10 @@
 import {
   "gaato/kbbi" @lib,
   "gaato/http",
-  "gaato/http-async" @http_async,
-  "moonbitlang/async",
+  "gaato/http-async/backend",
+  "gaato/http-async/runtime",
+  "gaato/mttp/client",
+  "moonbitlang/core/async",
   "moonbitlang/core/argparse",
   "moonbitlang/core/env",
 }
@@ -10,3 +12,7 @@ import {
 supported_targets = "wasm + native"
 
 pkgtype(kind: "executable")
+
+options(
+  "allow-experimental-packages": [ "moonbitlang/core/async" ],
+)

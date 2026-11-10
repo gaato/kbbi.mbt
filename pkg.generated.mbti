@@ -3,6 +3,7 @@ package "gaato/kbbi"
 
 import {
   "gaato/http",
+  "gaato/mttp/client",
   "moonbitlang/core/debug",
   "moonbitlang/core/json",
 }
@@ -12,7 +13,7 @@ pub const DEFAULT_BASE_URL : String = "https://kbbi.kemendikdasmen.go.id"
 
 pub fn entry_url(String, base_url? : String) -> String
 
-pub async fn lookup(&@http.Transport, String, base_url? : String) -> LookupResult raise KbbiError
+pub async fn lookup(@client.Client, String, base_url? : String) -> LookupResult
 
 pub fn parse(StringView, query~ : String, url~ : String) -> LookupResult
 
@@ -20,7 +21,7 @@ pub fn parse(StringView, query~ : String, url~ : String) -> LookupResult
 #derive(@debug.Debug)
 pub suberror KbbiError {
   EmptyQuery
-  Http(@http.HttpError)
+  Http(@http.TransportError)
   Status(Int32)
   Decode(String)
 }

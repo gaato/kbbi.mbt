@@ -71,7 +71,7 @@ pub struct Example {
 #derive(Debug)
 pub suberror KbbiError {
   EmptyQuery
-  Http(@http.HttpError)
+  Http(@http.TransportError)
   Status(Int32)
   Decode(String)
 }

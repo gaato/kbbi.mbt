@@ -27,18 +27,19 @@ moonx gaato/kbbi/cmd/kbbi makan
 
 ## Usage
 
-`lookup` takes any `gaato/http` transport, so the library itself does no IO
-of its own and builds for wasm, native, and js. In an executable, pass
-`@http_async.AsyncTransport` from `gaato/http-async`:
+`lookup` takes a `gaato/mttp/client.Client`, so the library itself imports
+no async runtime and builds for wasm, native, and js. In an executable,
+construct the client with `@backend.AsyncBackend::new()` from
+`gaato/http-async/backend` and `@runtime.AsyncClock::new()` from
+`gaato/http-async/runtime`. The backend negotiates and decodes compressed
+responses. The caller owns and closes the client; its timeout, retry, and
+body-limit settings apply to lookups.
 
 ```mbt check
 ///|
 /// Prints the headword and first definition of each entry for `word`.
-async fn print_definitions(
-  transport : &@http.Transport,
-  word : String,
-) -> Unit raise @kbbi.KbbiError {
-  let result = @kbbi.lookup(transport, word)
+async fn print_definitions(client : @client.Client, word : String) -> Unit {
+  let result = @kbbi.lookup(client, word)
   if !result.found {
     println("\{word}: not in KBBI")
   }
@@ -86,9 +87,12 @@ document.
 `lookup` raises `KbbiError`:
 
 - `EmptyQuery` when the query is blank after trimming; nothing is sent.
-- `Http` when the transport fails, carrying the `gaato/http` error.
+- `Http` when sending or reading fails, carrying a `gaato/http.TransportError`.
 - `Status` when KBBI answers with a non-2xx status.
 - `Decode` when the page is not valid UTF-8.
+
+Other errors raised by the client's custom policies propagate unchanged.
+Non-2xx bodies are closed without reading or decoding them.
 
 A word KBBI does not have is not an error: the result has `found: false` and
 no entries.
@@ -105,7 +109,9 @@ Arguments form one query, joined with spaces. A lookup prints one pretty
 JSON document, including `found: false` for no match. `--help` (`-h`)
 and `--version` (`-V`) print plain text wherever they appear. The exit code
 is 0 on success, 1 for a network, status, or decoding failure, and 2 for
-invalid arguments; errors go to stderr as `error: ...`. Requests time out after 10 seconds.
+invalid arguments; errors go to stderr as `error: ...`. Requests time out after
+10 seconds and response bodies are limited to 64 MiB, counting wire and
+decoded bytes separately.
 
 An optional moonrun policy limits the command's network access to KBBI. Save
 this as `kbbi-policy.json`:

@@ -3,10 +3,18 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.2.0]
 
 ### Changed
 
+- **Moved to `gaato/http` 0.6.0, `gaato/http-async` 0.6.0, and
+  `gaato/mttp` 0.1.0 on `moonbitlang/core/async`.** `lookup` now takes an
+  mttp `Client`, and `KbbiError::Http` carries a `TransportError`. Client
+  policy errors propagate unchanged. The library remains runtime-independent;
+  the CLI uses `AsyncBackend` with automatic decompression and a 10-second
+  deadline. Responses have separate 64 MiB wire and decoded-body limits.
+  Non-2xx responses still raise `Status` without reading the body, and
+  malformed UTF-8 still raises `Decode`.
 - **The README has sections and a compile-checked example.** It covers
   installing, a `lookup` and an offline `parse` example that `moon test`
   compiles and runs, the packages, errors, the command, and links. The
@@ -22,8 +30,7 @@ All notable changes to this project are documented here. The format follows
   core argparse's parse outcome instead of letting it print and exit, and
   exits through core `@env.exit`, so it no longer depends on
   `moonbitlang/x`.
-- Built on `gaato/http` 0.5.0 and `gaato/http-async` 0.5.0, and tested
-  with MoonBit 0.10.16. The generated `.mbti` files spell
+- Tested with MoonBit 0.10.20. The generated `.mbti` files spell
   `Int` as `Int32`, the same type.
 
 ## [0.1.6] - 2026-10-19
@@ -57,4 +64,4 @@ All notable changes to this project are documented here. The format follows
 - First release: the KBBI lookup library, the `kbbi` command, and its agent
   skill.
 
-[Unreleased]: https://github.com/gaato/kbbi.mbt/commits/main
+[0.2.0]: https://github.com/gaato/kbbi.mbt/compare/v0.1.6...v0.2.0

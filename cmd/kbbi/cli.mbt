@@ -6,7 +6,7 @@ priv suberror UsageError {
 ///|
 /// The version `--version` reports. scripts/gates.sh checks that it equals
 /// `version` in moon.mod.
-let version : String = "0.1.6"
+let version : String = "0.2.0"
 
 ///|
 /// What the arguments ask for. `Help` and `Version` carry the text to print,
@@ -21,12 +21,17 @@ priv enum Command {
 fn describe_error(err : Error) -> String {
   match err {
     @lib.EmptyQuery => "query must not be empty"
-    @lib.Http(@http.Connect(message)) => "connection failed: \{message}"
-    @lib.Http(@http.Timeout(ms~, ..)) => "request timed out after \{ms} ms"
-    @lib.Http(@http.Network(message~, ..)) => "network error: \{message}"
-    @lib.Http(@http.Protocol(message)) => "HTTP protocol error: \{message}"
-    @lib.Http(@http.Proxy(status~, message~)) =>
+    @lib.Http(@http.TransportError(kind=Connect, detail=message, ..)) =>
+      "connection failed: \{message}"
+    @lib.Http(@http.TransportError(kind=Timeout(ms~), ..)) =>
+      "request timed out after \{ms} ms"
+    @lib.Http(@http.TransportError(kind=Network, detail=message, ..)) =>
+      "network error: \{message}"
+    @lib.Http(@http.TransportError(kind=Protocol, detail=message, ..)) =>
+      "HTTP protocol error: \{message}"
+    @lib.Http(@http.TransportError(kind=Proxy(status~), detail=message, ..)) =>
       "proxy refused (HTTP \{status}): \{message}"
+    @lib.Http(error) => error.message()
     @lib.Status(code) => "KBBI returned HTTP \{code}"
     @lib.Decode(message) => "could not decode the response: \{message}"
     _ => err.to_string()

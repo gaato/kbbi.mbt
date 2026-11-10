@@ -13,9 +13,14 @@ async fn main {
   match command {
     Help(text) | Version(text) => println(text)
     Lookup(query) => {
-      let transport = @http_async.AsyncTransport::new(timeout_ms=10000)
-      defer transport.close()
-      let result = @lib.lookup(transport, query) catch {
+      let client = @client.Client::new(
+        @backend.AsyncBackend::new(),
+        @runtime.AsyncClock::new(),
+        timeout_ms=10000,
+        timer=@runtime.ClockTimer::new(),
+      )
+      defer client.close()
+      let result = @lib.lookup(client, query) catch {
         err => die(describe_error(err), code=1)
       }
       println(result.to_json().stringify(indent=2))

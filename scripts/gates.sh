@@ -16,16 +16,20 @@ grep -Fq "kbbi.mbt/$version (" lookup.mbt || {
   echo "lookup.mbt: the User-Agent does not name version $version from moon.mod" >&2
   exit 1
 }
-run moon fmt --check
-run moon check --target wasm --deny-warn
-run moon test --target wasm
-run moon build --target wasm
-run moon check --target native --deny-warn
-run moon test --target native
-run moon build --target native
+# Select this module's two packages explicitly: a local moon.work may also
+# contain dependencies whose tests and generated interfaces we do not own.
+run moon fmt --check . cmd/kbbi
+run moon check --target wasm --deny-warn . cmd/kbbi
+run moon test --target wasm . cmd/kbbi
+run moon build --target wasm . cmd/kbbi
+run moon check --target native --deny-warn . cmd/kbbi
+run moon test --target native . cmd/kbbi
+run moon build --target native . cmd/kbbi
+run moon check --target js --deny-warn .
 run moon test --target js --package gaato/kbbi
+run moon build --target js .
 run moon run scripts/docs_audit.mbtx
-run moon info
+run moon info . cmd/kbbi
 # Only meaningful in CI: in a jj working copy `git diff` compares against the
 # parent change, so uncommitted edits would look stale. Set CHECK_MBTI=1 to
 # enforce locally.
