@@ -3,8 +3,8 @@ test "help and version" {
   guard parse_command(["--help"]) is Help(help) else { fail("help") }
   assert_true(help.contains("Look up Indonesian words"))
   assert_true(parse_command(["-h"]) is Help(_))
-  assert_true(parse_command(["--version"]) is Version("kbbi 0.2.0"))
-  assert_true(parse_command(["-V"]) is Version("kbbi 0.2.0"))
+  assert_true(parse_command(["--version"]) is Version("kbbi 0.3.0"))
+  assert_true(parse_command(["-V"]) is Version("kbbi 0.3.0"))
 }
 
 ///|
@@ -15,7 +15,7 @@ test "help and version win over words wherever they appear" {
     assert_true(help.contains("Usage: kbbi"), msg=line)
     assert_false(help.has_suffix("\n"), msg=line)
   }
-  assert_true(parse_command(["rumah", "--version"]) is Version("kbbi 0.2.0"))
+  assert_true(parse_command(["rumah", "--version"]) is Version("kbbi 0.3.0"))
 }
 
 ///|

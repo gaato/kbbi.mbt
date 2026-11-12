@@ -65,7 +65,7 @@ pub async fn lookup(
     },
   )
   let request = @client.get(url)
-    .header("User-Agent", "kbbi.mbt/0.2.0 (https://github.com/gaato/kbbi.mbt)")
+    .header("User-Agent", "kbbi.mbt/0.3.0 (https://github.com/gaato/kbbi.mbt)")
     .header("Accept", "text/html,application/xhtml+xml")
     .response(reader)
   let response = client.send(request) catch {

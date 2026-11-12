@@ -3,6 +3,18 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0] - 2026-11-12
+
+### Changed
+
+- **Moved to `gaato/mttp` 0.2.0 and `gaato/mttp_async` 0.1.0.** `gaato/http`
+  and `gaato/http-async` are no longer dependencies; `lookup` takes the same
+  mttp `Client`, and `KbbiError::Http` carries `@mttp.TransportError`.
+- The CLI now follows redirects (up to 10 hops, never from HTTPS to HTTP),
+  because the mttp `Client` follows them by default; before, a redirect was
+  reported as an HTTP failure.
+- `bobzhang/html_parser` 0.2.3, which follows the stable MoonBit toolchain.
+
 ## [0.2.0] - 2026-11-10
 
 ### Changed
