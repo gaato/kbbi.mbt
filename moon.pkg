@@ -1,8 +1,8 @@
 import {
   "bobzhang/html_parser",
   "bobzhang/html_parser/dom",
-  "gaato/mttp" @http,
-  "gaato/mttp/client",
+  "gaato/mttp_core",
+  "gaato/mttp_core/client",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/string",
 }
@@ -10,10 +10,10 @@ import {
 supported_targets = "wasm + native + js"
 
 import {
-  "gaato/mttp/driver",
-  "gaato/mttp/sim",
+  "gaato/mttp_core/driver",
+  "gaato/mttp_core/sim",
 } for "wbtest"
 
 options(
-  "allow-experimental-packages": [ "gaato/mttp/driver" ],
+  "allow-experimental-packages": [ "gaato/mttp_core/driver" ],
 )

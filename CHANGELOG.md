@@ -3,6 +3,17 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.4.0] - 2026-11-12
+
+### Changed
+
+- **Moved to `gaato/mttp_core` 0.1 and `gaato/mttp` 0.3, renamed from
+  `gaato/mttp` and `gaato/mttp_async`.** `lookup` takes the same `Client`, and
+  `KbbiError::Http` carries `@mttp_core.TransportError`.
+- Inherits the h1client fixes: parked connections are checked before reuse,
+  `Expect: 100-continue` is handled, and a TLS write refused before sending is
+  resent.
+
 ## [0.3.0] - 2026-11-12
 
 ### Changed

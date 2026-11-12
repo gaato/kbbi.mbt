@@ -57,7 +57,7 @@ pub async fn lookup(
   let url = entry_url(trimmed, base_url~)
   // Select before reading so an error status wins over an unreadable body.
   let reader : @client.ResponsePlan[Result[Bytes, Int32], @client.Buffered] = @client.from_head(head => {
-      if @http.is_success(head.status) {
+      if @mttp_core.is_success(head.status) {
         @client.ResponsePlan::new((_, bytes) => Ok(bytes))
       } else {
         @client.ignore_body().any_status().map(_ => Err(head.status))
@@ -65,11 +65,11 @@ pub async fn lookup(
     },
   )
   let request = @client.get(url)
-    .header("User-Agent", "kbbi.mbt/0.3.0 (https://github.com/gaato/kbbi.mbt)")
+    .header("User-Agent", "kbbi.mbt/0.4.0 (https://github.com/gaato/kbbi.mbt)")
     .header("Accept", "text/html,application/xhtml+xml")
     .response(reader)
   let response = client.send(request) catch {
-    @http.TransportError(..) as err => raise Http(err)
+    @mttp_core.TransportError(..) as err => raise Http(err)
     err => raise err
   }
   let bytes = match response.body {

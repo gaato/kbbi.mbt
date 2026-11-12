@@ -1,9 +1,9 @@
 import {
   "gaato/kbbi" @lib,
-  "gaato/mttp" @http,
-  "gaato/mttp_async/backend",
-  "gaato/mttp_async/runtime",
-  "gaato/mttp/client",
+  "gaato/mttp_core",
+  "gaato/mttp/backend",
+  "gaato/mttp/runtime",
+  "gaato/mttp_core/client",
   "moonbitlang/core/async",
   "moonbitlang/core/argparse",
   "moonbitlang/core/env",

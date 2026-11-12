@@ -2,8 +2,8 @@
 package "gaato/kbbi"
 
 import {
-  "gaato/mttp",
-  "gaato/mttp/client",
+  "gaato/mttp_core",
+  "gaato/mttp_core/client",
   "moonbitlang/core/debug",
   "moonbitlang/core/json",
 }
@@ -21,7 +21,7 @@ pub fn parse(StringView, query~ : String, url~ : String) -> LookupResult
 #derive(@debug.Debug)
 pub suberror KbbiError {
   EmptyQuery
-  Http(@mttp.TransportError)
+  Http(@mttp_core.TransportError)
   Status(Int32)
   Decode(String)
 }

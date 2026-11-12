@@ -27,11 +27,11 @@ moonx gaato/kbbi/cmd/kbbi makan
 
 ## Usage
 
-`lookup` takes a `gaato/mttp/client.Client`, so the library itself imports
+`lookup` takes a `gaato/mttp_core/client.Client`, so the library itself imports
 no async runtime and builds for wasm, native, and js. In an executable,
 construct the client with `@backend.AsyncBackend::new()` from
-`gaato/mttp_async/backend` and `@runtime.AsyncClock::new()` from
-`gaato/mttp_async/runtime`. The backend negotiates and decodes compressed
+`gaato/mttp/backend` and `@runtime.AsyncClock::new()` from
+`gaato/mttp/runtime`. The backend negotiates and decodes compressed
 responses. The caller owns and closes the client; its timeout, retry, and
 body-limit settings apply to lookups.
 
@@ -87,7 +87,7 @@ document.
 `lookup` raises `KbbiError`:
 
 - `EmptyQuery` when the query is blank after trimming; nothing is sent.
-- `Http` when sending or reading fails, carrying a `gaato/mttp.TransportError`.
+- `Http` when sending or reading fails, carrying a `gaato/mttp_core.TransportError`.
 - `Status` when KBBI answers with a non-2xx status.
 - `Decode` when the page is not valid UTF-8.
 

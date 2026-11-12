@@ -1,31 +1,31 @@
 ///|
 struct TestBackend {
-  mut request : @http.Request?
-  mut options : @http.SendOptions?
-  response : @http.Response
+  mut request : @mttp_core.Request?
+  mut options : @mttp_core.SendOptions?
+  response : @mttp_core.Response
 }
 
 ///|
-impl @http.Backend for TestBackend with fn send(self, request, options) {
+impl @mttp_core.Backend for TestBackend with fn send(self, request, options) {
   self.request = Some(request)
   self.options = Some(options)
   self.response
 }
 
 ///|
-fn test_backend(response : @http.Response) -> TestBackend {
+fn test_backend(response : @mttp_core.Response) -> TestBackend {
   { request: None, options: None, response, }
 }
 
 ///|
-fn test_client(backend : &@http.Backend) -> @client.Client {
+fn test_client(backend : &@mttp_core.Backend) -> @client.Client {
   @client.Client::new(backend, @sim.FakeClock::new(), timeout_ms=10000)
 }
 
 ///|
 test "lookup sends encoded URL and headers" {
   let backend = test_backend(
-    @http.Response::new(200, body=Bytes(@utf8.encode(gemas_html))),
+    @mttp_core.Response::new(200, body=Bytes(@utf8.encode(gemas_html))),
   )
   let client = test_client(backend)
   defer client.close()
@@ -34,11 +34,11 @@ test "lookup sends encoded URL and headers" {
   assert_eq(result.url, DEFAULT_BASE_URL + "/entri/gemas")
   assert_true(result.found)
   let request = backend.request.unwrap()
-  assert_eq(request.meth, @http.Get)
+  assert_eq(request.meth, @mttp_core.Get)
   assert_eq(request.url, result.url)
   assert_eq(
     request.headers.get("User-Agent"),
-    Some("kbbi.mbt/0.3.0 (https://github.com/gaato/kbbi.mbt)"),
+    Some("kbbi.mbt/0.4.0 (https://github.com/gaato/kbbi.mbt)"),
   )
   assert_eq(
     request.headers.get("Accept"),
@@ -52,7 +52,7 @@ test "lookup sends encoded URL and headers" {
 
 ///|
 test "lookup rejects empty query before sending" {
-  let backend = test_backend(@http.Response::new(200))
+  let backend = test_backend(@mttp_core.Response::new(200))
   let client = test_client(backend)
   defer client.close()
   try @driver.run_sync(() => lookup(client, "  \t  ")) catch {
@@ -66,7 +66,7 @@ test "lookup rejects empty query before sending" {
 
 ///|
 test "lookup maps status and malformed UTF-8" {
-  let client = test_client(test_backend(@http.Response::new(503)))
+  let client = test_client(test_backend(@mttp_core.Response::new(503)))
   defer client.close()
   try @driver.run_sync(() => lookup(client, "gemas")) catch {
     Status(503) => ()
@@ -75,7 +75,7 @@ test "lookup maps status and malformed UTF-8" {
     _ => fail("expected status error")
   }
   let bad_utf8 = test_client(
-    test_backend(@http.Response::new(200, body=Bytes(b"\xff"))),
+    test_backend(@mttp_core.Response::new(200, body=Bytes(b"\xff"))),
   )
   defer bad_utf8.close()
   try @driver.run_sync(() => lookup(bad_utf8, "gemas")) catch {
@@ -88,7 +88,11 @@ test "lookup maps status and malformed UTF-8" {
 
 ///|
 test "lookup maps transport failures without retrying" {
-  let error = @http.TransportError(kind=Connect, phase=Dial, detail="offline")
+  let error = @mttp_core.TransportError(
+    kind=Connect,
+    phase=Dial,
+    detail="offline",
+  )
   let mut calls = 0
   let backend = @client.from_fn((_, _) => {
     calls += 1
@@ -97,7 +101,8 @@ test "lookup maps transport failures without retrying" {
   let client = test_client(backend)
   defer client.close()
   try @driver.run_sync(() => lookup(client, "gemas")) catch {
-    Http(@http.TransportError(kind=Connect, phase=Dial, detail="offline")) => ()
+    Http(@mttp_core.TransportError(kind=Connect, phase=Dial, detail="offline")) =>
+      ()
     _ => fail("wrong transport error")
   } noraise {
     _ => fail("expected transport error")
@@ -112,7 +117,10 @@ test "lookup reads and closes a streamed fixture" {
   let feed = @sim.Feed::bytes(d, [bytes[:17].to_owned(), bytes[17:].to_owned()])
   let client = test_client(
     test_backend(
-      @http.Response::new(200, body=Stream(@http.StreamBody::new(feed))),
+      @mttp_core.Response::new(
+        200,
+        body=Stream(@mttp_core.StreamBody::new(feed)),
+      ),
     ),
   )
   defer client.close()
@@ -125,11 +133,16 @@ test "lookup reads and closes a streamed fixture" {
 test "lookup closes status bodies without reading them" {
   let d = @driver.Driver::new()
   let feed = @sim.Feed::new(d, [
-    Fail(@http.TransportError(kind=Network, phase=Body, detail="do not read")),
+    Fail(
+      @mttp_core.TransportError(kind=Network, phase=Body, detail="do not read"),
+    ),
   ])
   let client = test_client(
     test_backend(
-      @http.Response::new(503, body=Stream(@http.StreamBody::new(feed))),
+      @mttp_core.Response::new(
+        503,
+        body=Stream(@mttp_core.StreamBody::new(feed)),
+      ),
     ),
   )
   defer client.close()
@@ -146,7 +159,7 @@ test "lookup closes status bodies without reading them" {
 ///|
 test "lookup maps streamed body failures and closes the body" {
   let d = @driver.Driver::new()
-  let error = @http.TransportError(
+  let error = @mttp_core.TransportError(
     kind=Timeout(ms=10000),
     phase=Body,
     detail="slow",
@@ -154,13 +167,20 @@ test "lookup maps streamed body failures and closes the body" {
   let feed = @sim.Feed::new(d, [Chunk(b"<h2>"), Fail(error)])
   let client = test_client(
     test_backend(
-      @http.Response::new(200, body=Stream(@http.StreamBody::new(feed))),
+      @mttp_core.Response::new(
+        200,
+        body=Stream(@mttp_core.StreamBody::new(feed)),
+      ),
     ),
   )
   defer client.close()
   try d.run(() => lookup(client, "gemas")) catch {
     Http(
-      @http.TransportError(kind=Timeout(ms=10000), phase=Body, detail="slow")
+      @mttp_core.TransportError(
+        kind=Timeout(ms=10000),
+        phase=Body,
+        detail="slow"
+      )
     ) => ()
     _ => fail("wrong body error")
   } noraise {
@@ -175,14 +195,18 @@ test "lookup respects the client's decoded body limit" {
   let feed = @sim.Feed::bytes(d, [b"123", b"45"])
   let client = @client.Client::new(
     test_backend(
-      @http.Response::new(200, body=Stream(@http.StreamBody::new(feed))),
+      @mttp_core.Response::new(
+        200,
+        body=Stream(@mttp_core.StreamBody::new(feed)),
+      ),
     ),
     @sim.FakeClock::new(),
     max_body_bytes=4,
   )
   defer client.close()
   try d.run(() => lookup(client, "gemas")) catch {
-    Http(@http.TransportError(kind=TooLarge(limit=4), phase=Body, ..)) => ()
+    Http(@mttp_core.TransportError(kind=TooLarge(limit=4), phase=Body, ..)) =>
+      ()
     _ => fail("wrong body limit error")
   } noraise {
     _ => fail("expected body limit error")
@@ -192,7 +216,7 @@ test "lookup respects the client's decoded body limit" {
 
 ///|
 test "lookup propagates client configuration errors" {
-  let backend = test_backend(@http.Response::new(200))
+  let backend = test_backend(@mttp_core.Response::new(200))
   let client = @client.Client::new(backend, @sim.FakeClock::new(), total_ms=10)
   defer client.close()
   try @driver.run_sync(() => lookup(client, "gemas")) catch {
