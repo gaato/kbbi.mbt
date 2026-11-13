@@ -175,13 +175,8 @@ test "lookup maps streamed body failures and closes the body" {
   )
   defer client.close()
   try d.run(() => lookup(client, "gemas")) catch {
-    Http(
-      @mttp_core.TransportError(
-        kind=Timeout(ms=10000),
-        phase=Body,
-        detail="slow"
-      )
-    ) => ()
+    Http(@mttp_core.TransportError(kind~, phase~, detail~)) =>
+      assert_eq((kind, phase, detail), (Timeout(ms=10000), Body, "slow"))
     _ => fail("wrong body error")
   } noraise {
     _ => fail("expected body error")

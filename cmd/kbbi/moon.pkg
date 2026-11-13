@@ -1,6 +1,5 @@
 import {
   "gaato/kbbi" @lib,
-  "gaato/mttp_core",
   "gaato/mttp/backend",
   "gaato/mttp/runtime",
   "gaato/mttp_core/client",
@@ -8,6 +7,10 @@ import {
   "moonbitlang/core/argparse",
   "moonbitlang/core/env",
 }
+
+import {
+  "gaato/mttp_core",
+} for "wbtest"
 
 supported_targets = "wasm + native"
 

@@ -1,4 +1,6 @@
 ///|
+
+///|
 priv suberror UsageError {
   UsageError(String)
 }
@@ -21,17 +23,16 @@ priv enum Command {
 fn describe_error(err : Error) -> String {
   match err {
     @lib.EmptyQuery => "query must not be empty"
-    @lib.Http(@mttp_core.TransportError(kind=Connect, detail=message, ..)) =>
+    @lib.Http(TransportError(kind=Connect, detail=message, ..)) =>
       "connection failed: \{message}"
-    @lib.Http(@mttp_core.TransportError(kind=Timeout(ms~), ..)) =>
+    @lib.Http(TransportError(kind=Timeout(ms~), ..)) =>
       "request timed out after \{ms} ms"
-    @lib.Http(@mttp_core.TransportError(kind=Network, detail=message, ..)) =>
+    @lib.Http(TransportError(kind=Network, detail=message, ..)) =>
       "network error: \{message}"
-    @lib.Http(@mttp_core.TransportError(kind=Protocol, detail=message, ..)) =>
+    @lib.Http(TransportError(kind=Protocol, detail=message, ..)) =>
       "HTTP protocol error: \{message}"
-    @lib.Http(
-      @mttp_core.TransportError(kind=Proxy(status~), detail=message, ..)
-    ) => "proxy refused (HTTP \{status}): \{message}"
+    @lib.Http(TransportError(kind=Proxy(status~), detail=message, ..)) =>
+      "proxy refused (HTTP \{status}): \{message}"
     @lib.Http(error) => error.message()
     @lib.Status(code) => "KBBI returned HTTP \{code}"
     @lib.Decode(message) => "could not decode the response: \{message}"
