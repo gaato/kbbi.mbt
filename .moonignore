@@ -9,5 +9,6 @@ node_modules/
 # Repository-only files: agent instructions, the docs audit, the gates, and
 # the fixture regeneration script.
 AGENTS.md
+CLAUDE.md
 scripts/
 tools/
