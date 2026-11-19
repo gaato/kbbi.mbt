@@ -21,3 +21,14 @@ Run `moon fmt`, then `scripts/gates.sh`. CI and the toolchain canary (`.github/w
 - Links in published files are absolute URLs, because mooncakes.io serves them away from the repository. Files only the repository needs go in `.moonignore`, which also tells the docs audit that they are not published.
 - Run `moon run scripts/docs_audit.mbtx` after changing docs or public declarations. `scripts/docs_audit.mbtx` is shared by every gaato MoonBit repository: copy it from gaato/discord.mbt rather than editing it here, and keep this repository's exceptions in `scripts/docs_audit.json` and `scripts/docs_audit.allow`.
 - Record user-visible changes under `## [Unreleased]` in `CHANGELOG.md`; it is the history the README links to.
+
+## API changes
+
+- When a published function's labelled parameter is renamed or removed, an
+  optional one becomes required, or a positional one becomes labelled, keep
+  existing calls compiling for one minor release with `#label_migration`
+  (`alias=old`, `fill=false`, `fill=true` or `allow_positional=true`) and a
+  `msg` naming the new form, and remove the attribute in the next minor
+  release. Callers then get a warning instead of a build failure; the
+  CHANGELOG still lists the change with its migration note. A renamed or
+  removed function keeps a `#deprecated` alias for the same period.
