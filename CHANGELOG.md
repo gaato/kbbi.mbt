@@ -3,6 +3,16 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- **The README shows how an executable builds the client**: a compiled
+  `run_lookup` builds it with `@mttp.client()` and runs the lookup on mttp's
+  event loop, instead of naming backend and clock constructors in prose. The
+  root package imports `gaato/mttp` for its tests only, so the library still
+  imports no async runtime.
+
 ## [0.4.0] - 2026-11-12
 
 ### Changed
