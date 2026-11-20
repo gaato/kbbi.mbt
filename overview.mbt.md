@@ -28,12 +28,11 @@ moonx gaato/kbbi/cmd/kbbi makan
 ## Usage
 
 `lookup` takes a `gaato/mttp_core/client.Client`, so the library itself imports
-no async runtime and builds for wasm, native, and js. In an executable,
-construct the client with `@backend.AsyncBackend::new()` from
-`gaato/mttp/backend` and `@runtime.AsyncClock::new()` from
-`gaato/mttp/runtime`. The backend negotiates and decodes compressed
-responses. The caller owns and closes the client; its timeout, retry, and
-body-limit settings apply to lookups.
+no async runtime and builds for wasm, native, and js. An executable adds
+`gaato/mttp` (`moon add gaato/mttp`) and builds the client with
+`@mttp.client()`, as `run_lookup` below does; its backend negotiates and
+decodes compressed responses. The caller owns and closes the client; its
+timeout, retry, and body-limit settings apply to lookups.
 
 ```mbt check
 ///|
@@ -49,8 +48,20 @@ async fn print_definitions(client : @client.Client, word : String) -> Unit {
 }
 
 ///|
-test "print_definitions compiles" {
+/// Builds a client, looks `word` up and closes the client, on mttp's event
+/// loop; an executable's `fn main` can call it.
+fn run_lookup(word : String) -> Unit {
+  @mttp.run(async fn() {
+    let client = @mttp.client(timeout_ms=10_000)
+    defer client.close()
+    print_definitions(client, word)
+  })
+}
+
+///|
+test "the usage example compiles" {
   ignore(print_definitions)
+  ignore(run_lookup)
 }
 ```
 
