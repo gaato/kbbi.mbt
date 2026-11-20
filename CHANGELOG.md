@@ -5,6 +5,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Updated to `gaato/mttp` 0.5.0, `gaato/mttp_core` 0.3.1,
+  `bobzhang/html_parser` 0.2.4, and MoonBit 0.10.21.** On native and wasm,
+  reading a close-delimited HTTPS response now raises `Http` if the TLS
+  peer disconnects without `close_notify`.
+
 ### Fixed
 
 - **The README shows how an executable builds the client**: a compiled

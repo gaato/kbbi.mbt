@@ -15,7 +15,7 @@ description = "Unofficial KBBI (Kamus Besar Bahasa Indonesia) lookup for MoonBit
 preferred_target = "wasm"
 
 import {
-  "bobzhang/html_parser@0.2.3",
-  "gaato/mttp@0.3.0",
-  "gaato/mttp_core@0.1.0",
+  "bobzhang/html_parser@0.2.4",
+  "gaato/mttp@0.5.0",
+  "gaato/mttp_core@0.3.1",
 }
