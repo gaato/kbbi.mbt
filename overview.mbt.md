@@ -1,43 +1,71 @@
 # gaato/kbbi
 
-An unofficial lookup library, command-line tool, and agent skill for
-[KBBI Daring](https://kbbi.kemendikdasmen.go.id), the online edition of the
-Indonesian dictionary *Kamus Besar Bahasa Indonesia*. It reads an entry page
-and returns typed data: headwords with homograph numbers, pronunciations,
-root words and nonstandard spellings, and each sense's labels, definition,
-examples, and example meanings.
+Look up Indonesian words in [KBBI Daring](https://kbbi.kemendikdasmen.go.id),
+the online edition of *Kamus Besar Bahasa Indonesia*, from MoonBit or from a
+shell. An entry comes back as typed data, or as JSON from the command:
+headwords with homograph numbers, pronunciations, root words and nonstandard
+spellings, and each sense's labels, definition, examples and example meanings.
+An agent skill for the command is included.
 
-> **Status**: unofficial. Results are scraped from KBBI Daring; this project
-> is not affiliated with KBBI or its operator.
+Unofficial, and not affiliated with KBBI or its operator. Results are read
+from KBBI Daring's pages.
+
+[Bahasa Indonesia](https://github.com/gaato/kbbi.mbt/blob/main/README.id.md) ·
+[日本語](https://github.com/gaato/kbbi.mbt/blob/main/README.ja.md)
 
 ## Install
 
-As a library:
+The command needs no install: MoonBit's `moonx` downloads the latest release
+and runs it, as below. For the library:
 
 ```sh
 moon add gaato/kbbi
+moon add gaato/mttp
 ```
 
-As a command, run the prebuilt executable with MoonBit's `moonx`, which
-downloads the latest release:
+## Try it from a shell
 
 ```sh
 moonx gaato/kbbi/cmd/kbbi makan
+moonx gaato/kbbi/cmd/kbbi rumah sakit
+moonx gaato/kbbi/cmd/kbbi --help
 ```
 
-## Usage
+The arguments form one query, joined with spaces, so the second line looks up
+the phrase *rumah sakit*. A lookup prints one pretty-printed JSON document.
 
-`lookup` takes a `gaato/mttp_core/client.Client`, so the library itself imports
-no async runtime and builds for wasm, native, and js. An executable adds
-`gaato/mttp` (`moon add gaato/mttp`) and builds the client with
-`@mttp.client()`, as `run_lookup` below does; its backend negotiates and
-decodes compressed responses. The caller owns and closes the client; its
-timeout, retry, and body-limit settings apply to lookups.
+| Exit code | Meaning |
+| --- | --- |
+| 0 | Success, including a word KBBI does not have (`found: false`) |
+| 1 | A network, status or decoding failure |
+| 2 | Invalid arguments |
+
+Errors go to stderr as `error: ...`. Requests time out after 10 seconds.
+Please avoid rapid bulk lookups.
+
+An optional moonrun policy limits the command's network access to KBBI. Save
+this as `kbbi-policy.json`:
+
+```json
+{"net":{"connect":["kbbi.kemendikdasmen.go.id:443"]}}
+```
+
+```sh
+moonx --experimental-policy kbbi-policy.json gaato/kbbi/cmd/kbbi gemas
+```
+
+## Use the library
+
+`lookup` takes a `Client` from `gaato/mttp_core`, so the library imports no
+async runtime and builds for wasm, native and js. An executable adds
+`gaato/mttp`, whose `@mttp.Client` is the same type, and builds one with
+`@mttp.client()`, as `run_lookup` does below. The caller owns and closes the client, and its timeout, retry and
+body-limit settings apply to lookups. Reuse one client for several queries.
 
 ```mbt check
 ///|
 /// Prints the headword and first definition of each entry for `word`.
-async fn print_definitions(client : @client.Client, word : String) -> Unit {
+async fn print_definitions(client : @mttp.Client, word : String) -> Unit {
   let result = @kbbi.lookup(client, word)
   if !result.found {
     println("\{word}: not in KBBI")
@@ -65,8 +93,13 @@ test "the usage example compiles" {
 }
 ```
 
-`parse` reads a saved entry page without any IO, and `entry_url` gives the
-page to save:
+A word KBBI does not have is not an error: the result has `found: false` and
+no entries. `to_json()` converts a result to the same JSON the command prints.
+
+### Parse a saved page
+
+`parse` reads an entry page without any I/O, and `entry_url` gives the page to
+save. Use it for tests, or to reread an entry without another request:
 
 ```mbt check
 ///|
@@ -83,65 +116,26 @@ test "parse a saved page" {
 }
 ```
 
-A result converts to JSON with `to_json()`; the command prints the same
-document.
+### Errors
+
+`lookup` raises `KbbiError`:
+
+- `EmptyQuery`: the query is blank after trimming. Nothing is sent.
+- `Http`: sending or reading failed. It carries the `TransportError`.
+- `Status`: KBBI answered with a non-2xx status.
+- `Decode`: the page is not valid UTF-8.
+
+Errors raised by the client's own policies pass through unchanged.
 
 ## Packages
 
 | Package | What it is | Targets |
 |---|---|---|
-| `gaato/kbbi` | The lookup library: `lookup`, `parse`, `entry_url`, and the result types | wasm, native, js |
+| `gaato/kbbi` | The library: `lookup`, `parse`, `entry_url` and the result types | wasm, native, js |
 | `gaato/kbbi/cmd/kbbi` | The `kbbi` command and its agent skill | wasm, native |
 
-## Errors
-
-`lookup` raises `KbbiError`:
-
-- `EmptyQuery` when the query is blank after trimming; nothing is sent.
-- `Http` when sending or reading fails, carrying a `gaato/mttp_core.TransportError`.
-- `Status` when KBBI answers with a non-2xx status.
-- `Decode` when the page is not valid UTF-8.
-
-Other errors raised by the client's custom policies propagate unchanged.
-Non-2xx bodies are closed without reading or decoding them.
-
-A word KBBI does not have is not an error: the result has `found: false` and
-no entries.
-
-## Run
-
-```sh
-moonx gaato/kbbi/cmd/kbbi makan
-moonx gaato/kbbi/cmd/kbbi rumah sakit
-moonx gaato/kbbi/cmd/kbbi --help
-```
-
-Arguments form one query, joined with spaces. A lookup prints one pretty
-JSON document, including `found: false` for no match. `--help` (`-h`)
-and `--version` (`-V`) print plain text wherever they appear. The exit code
-is 0 on success, 1 for a network, status, or decoding failure, and 2 for
-invalid arguments; errors go to stderr as `error: ...`. Requests time out after
-10 seconds and response bodies are limited to 64 MiB, counting wire and
-decoded bytes separately.
-
-An optional moonrun policy limits the command's network access to KBBI. Save
-this as `kbbi-policy.json`:
-
-```json
-{"net":{"connect":["kbbi.kemendikdasmen.go.id:443"]}}
-```
-
-```sh
-moonx --experimental-policy kbbi-policy.json gaato/kbbi/cmd/kbbi gemas
-```
-
-Please avoid rapid bulk lookups.
-
-## Agent skill
-
-The command's package includes an agent skill,
-[`cmd/kbbi/SKILL.md`](https://github.com/gaato/kbbi.mbt/blob/main/cmd/kbbi/SKILL.md),
-that tells a coding agent how to run lookups and read the JSON.
+The [agent skill](https://github.com/gaato/kbbi.mbt/blob/main/cmd/kbbi/SKILL.md)
+describes how to run lookups and read the JSON.
 
 ## Links
 
