@@ -5,6 +5,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-11-21
+
+### Changed
+
+- **Needs MoonBit 0.10.22.** Depends on gaato/mttp 0.5.2: on 0.10.22,
+  core/async's readers take `read_into(MutArrayView[Byte])`, so gaato/mttp
+  0.5.1, which kbbi 0.4.1 depends on, does not build for native or wasm.
+  Migration: build with MoonBit 0.10.22 or later.
+
 ## [0.4.1] - 2026-11-21
 
 ### Changed

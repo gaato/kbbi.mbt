@@ -1,6 +1,6 @@
 ///|
 /// This module's version: the one in moon.mod, which scripts/gates.sh checks.
-let version : String = "0.4.1"
+let version : String = "0.4.2"
 
 ///|
 /// The `User-Agent` of a lookup, naming this module's version.

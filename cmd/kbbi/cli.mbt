@@ -8,7 +8,7 @@ priv suberror UsageError {
 ///|
 /// The version `--version` reports. scripts/gates.sh checks that it equals
 /// `version` in moon.mod.
-let version : String = "0.4.1"
+let version : String = "0.4.2"
 
 ///|
 /// What the arguments ask for. `Help` and `Version` carry the text to print,

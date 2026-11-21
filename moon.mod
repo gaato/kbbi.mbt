@@ -1,6 +1,6 @@
 name = "gaato/kbbi"
 
-version = "0.4.1"
+version = "0.4.2"
 
 readme = "README.md"
 
@@ -16,6 +16,6 @@ preferred_target = "wasm"
 
 import {
   "bobzhang/html_parser@0.2.4",
-  "gaato/mttp@0.5.1",
+  "gaato/mttp@0.5.2",
   "gaato/mttp_core@0.3.2",
 }
