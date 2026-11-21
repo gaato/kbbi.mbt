@@ -38,7 +38,7 @@ test "lookup sends encoded URL and headers" {
   assert_eq(request.url, result.url)
   assert_eq(
     request.headers.get("User-Agent"),
-    Some("kbbi.mbt/0.4.0 (https://github.com/gaato/kbbi.mbt)"),
+    Some("kbbi.mbt/\{version} (https://github.com/gaato/kbbi.mbt)"),
   )
   assert_eq(
     request.headers.get("Accept"),

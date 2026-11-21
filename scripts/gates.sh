@@ -12,8 +12,8 @@ grep -Fq "let version : String = \"$version\"" cmd/kbbi/cli.mbt || {
   echo "cmd/kbbi/cli.mbt: version does not equal $version from moon.mod" >&2
   exit 1
 }
-grep -Fq "kbbi.mbt/$version (" lookup.mbt || {
-  echo "lookup.mbt: the User-Agent does not name version $version from moon.mod" >&2
+grep -Fq "let version : String = \"$version\"" lookup.mbt || {
+  echo "lookup.mbt: version does not equal $version from moon.mod" >&2
   exit 1
 }
 # Select this module's two packages explicitly: a local moon.work may also

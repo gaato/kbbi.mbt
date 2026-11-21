@@ -5,8 +5,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-11-21
+
 ### Changed
 
+- **Depends on gaato/mttp 0.5.1 and gaato/mttp_core 0.3.2**, whose decompression is faster with the same bytes out.
+- **The README is rewritten** with an Install section and an example over `@mttp.Client`; Indonesian and Japanese translations are in README.id.md and README.ja.md.
 - **Updated to `gaato/mttp` 0.5.0, `gaato/mttp_core` 0.3.1,
   `bobzhang/html_parser` 0.2.4, and MoonBit 0.10.21.** On native and wasm,
   reading a close-delimited HTTPS response now raises `Http` if the TLS

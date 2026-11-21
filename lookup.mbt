@@ -1,4 +1,12 @@
 ///|
+/// This module's version: the one in moon.mod, which scripts/gates.sh checks.
+let version : String = "0.4.1"
+
+///|
+/// The `User-Agent` of a lookup, naming this module's version.
+let user_agent : String = "kbbi.mbt/\{version} (https://github.com/gaato/kbbi.mbt)"
+
+///|
 fn encoded_segment(query : String) -> String {
   let hex = "0123456789ABCDEF"
   let result : Array[String] = []
@@ -65,7 +73,7 @@ pub async fn lookup(
     },
   )
   let request = @client.get(url)
-    .header("User-Agent", "kbbi.mbt/0.4.0 (https://github.com/gaato/kbbi.mbt)")
+    .header("User-Agent", user_agent)
     .header("Accept", "text/html,application/xhtml+xml")
     .response(reader)
   let response = client.send(request) catch {
